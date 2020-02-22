@@ -50,7 +50,7 @@ namespace UnitTests
             877, 8593, 4706, 5517, 9143 })]
         public void TestPoll(int[] elementsToInsert)
         {
-            var heap = new HeapMock<int>();
+            var heap = new Heap<int>();
 
             foreach (var element in elementsToInsert)
             {
