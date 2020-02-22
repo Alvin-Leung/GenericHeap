@@ -81,6 +81,7 @@ namespace GenericHeap
         /// Gets the highest priority element from the heap without removing it
         /// </summary>
         /// <returns>The highest priority element</returns>
+        /// <exception cref="InvalidOperationException">Thrown when there are no elements in the heap</exception>
         public T Peek()
         {
             if (this.IsEmpty)
