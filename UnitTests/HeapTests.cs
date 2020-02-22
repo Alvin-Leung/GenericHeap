@@ -1,10 +1,20 @@
+using GenericHeap;
 using NUnit.Framework;
 using System.Linq;
 
 namespace UnitTests
 {
+    /// <summary>
+    /// Tests for the <see cref="Heap{T}"/> class
+    /// </summary>
     public class HeapTests
     {
+        /// <summary>
+        /// Checks that the state of the internal array in <see cref="Heap{T}"/> is correct after insertion
+        /// of elements
+        /// </summary>
+        /// <param name="elementsToInsert">The elements to insert into the heap</param>
+        /// <param name="expectedInternalArray">The expected internal array after insertion of all elements</param>
         [TestCase(new[] { 10 }, new[] { 10 })]
         [TestCase(new[] { 1, 2, 3, 4, 5 }, new[] { 5, 4, 2, 1, 3 })]
         [TestCase(new[] { 1000, 2, 567, 36, 999, 1001 }, new[] { 1001, 999, 1000, 2, 36, 567 })]
@@ -21,6 +31,10 @@ namespace UnitTests
             Assert.That(heap.GetInternalArray(), Is.EqualTo(expectedInternalArray));
         }
 
+        /// <summary>
+        /// Checks that after inserting elements, polled values are returned in order of descending priority
+        /// </summary>
+        /// <param name="elementsToInsert">The elements to insert into the heap</param>
         [TestCase(new[] { 15 })]
         [TestCase(new[] { 1, 2, 3, 4, 5 })]
         [TestCase(new[] { 1000, 2, 567, 36, 999, 1001 })]

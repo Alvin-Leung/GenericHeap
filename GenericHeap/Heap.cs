@@ -3,25 +3,51 @@ using System.Collections.Generic;
 
 namespace GenericHeap
 {
+    /// <summary>
+    /// A generic heap implementation that allows injection of custom comparison strategies for 
+    /// determining element priority
+    /// </summary>
+    /// <typeparam name="T">Type of element that will be stored in the heap</typeparam>
     public class Heap<T> where T : IComparable
     {
+        /// <summary>
+        /// The heap's internal elements
+        /// </summary>
         protected readonly List<T> elements;
         private readonly IComparer<T> comparer;
 
+        /// <summary>
+        /// Returns true if there are no elements in the heap, otherwise returns false
+        /// </summary>
         public bool IsEmpty => elements.Count == 0;
 
+        /// <summary>
+        /// Returns the number of elements in the heap
+        /// </summary>
         public int Count => elements.Count;
 
+        /// <summary>
+        /// Constructs a <see cref="Heap{T}"/> with default comparer for type <see cref="T"/>
+        /// </summary>
         public Heap() : this(Comparer<T>.Default)
         {
         }
 
+        /// <summary>
+        /// Constructs a <see cref="Heap{T}"/> with custom comparer for type <see cref="T"/>
+        /// </summary>
+        /// <param name="comparer">The custom comparer to use when determining priority order</param>
         public Heap(IComparer<T> comparer)
         {
             this.comparer = comparer;
             this.elements = new List<T>();
         }
 
+        /// <summary>
+        /// Removes the highest priority element from the heap and returns it to the caller of <see cref="Poll"/>
+        /// </summary>
+        /// <returns>The highest priority element</returns>
+        /// <exception cref="InvalidOperationException">Thrown when there are no elements in the heap</exception>
         public T Poll()
         {
             if (this.IsEmpty)
@@ -41,12 +67,20 @@ namespace GenericHeap
             return root;
         }
 
+        /// <summary>
+        /// Inserts an element into the heap
+        /// </summary>
+        /// <param name="newElement">The element to insert</param>
         public void Insert(T newElement)
         {
             this.elements.Add(newElement);
             this.BubbleUp(this.elements.Count - 1);
         }
 
+        /// <summary>
+        /// Gets the highest priority element from the heap without removing it
+        /// </summary>
+        /// <returns>The highest priority element</returns>
         public T Peek()
         {
             if (this.IsEmpty)
