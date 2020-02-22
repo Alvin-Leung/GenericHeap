@@ -113,32 +113,15 @@ namespace GenericHeap
                 return;
             }
 
-            this.SwapWithHigherPriorityChild(parentIndex);
-        }
+            var highestPriorityElementIndex = this.GetHighestPriorityElementIndex(parentIndex, leftChildIndex, rightChildIndex);
 
-        private void SwapWithHigherPriorityChild(int parentIndex)
-        {
-            var leftChildIndex = this.GetIndexOfLeftChild(parentIndex);
-            var rightChildIndex = this.GetIndexOfRightChild(parentIndex);
-            var isLeftChildHigherPriority = this.IsChildHigherPriority(parentIndex, leftChildIndex);
-            var isRightChildHigherPriority = this.IsChildHigherPriority(parentIndex, rightChildIndex);
+            if (highestPriorityElementIndex == parentIndex)
+            {
+                return;
+            }
 
-            if (isLeftChildHigherPriority && isRightChildHigherPriority)
-            {
-                var higherPriorityChildIndex = this.GetHigherPriorityElementIndex(leftChildIndex, rightChildIndex);
-                this.SwapElements(parentIndex, higherPriorityChildIndex);
-                this.BubbleDown(higherPriorityChildIndex);
-            }
-            else if (isLeftChildHigherPriority)
-            {
-                this.SwapElements(parentIndex, leftChildIndex);
-                this.BubbleDown(leftChildIndex);
-            }
-            else if (isRightChildHigherPriority)
-            {
-                this.SwapElements(parentIndex, rightChildIndex);
-                this.BubbleDown(rightChildIndex);
-            }
+            this.SwapElements(parentIndex, highestPriorityElementIndex);
+            this.BubbleDown(highestPriorityElementIndex);
         }
 
         private void BubbleUp(int childIndex)
@@ -160,6 +143,27 @@ namespace GenericHeap
         private bool IsChildHigherPriority(int parentIndex, int childIndex)
         {
             return this.comparer.Compare(this.elements[childIndex], this.elements[parentIndex]) > 0;
+        }
+
+        private int GetHighestPriorityElementIndex(int parentIndex, int leftChildIndex, int rightChildIndex)
+        {
+            var isLeftChildHigherPriority = this.IsChildHigherPriority(parentIndex, leftChildIndex);
+            var isRightChildHigherPriority = this.IsChildHigherPriority(parentIndex, rightChildIndex);
+
+            if (isLeftChildHigherPriority && isRightChildHigherPriority)
+            {
+                return this.GetHigherPriorityElementIndex(leftChildIndex, rightChildIndex);
+            }
+            else if (isLeftChildHigherPriority)
+            {
+                return leftChildIndex;
+            }
+            else if (isRightChildHigherPriority)
+            {
+                return rightChildIndex;
+            }
+
+            return parentIndex;
         }
 
         private int GetHigherPriorityElementIndex(int leftElementIndex, int rightElementIndex)
