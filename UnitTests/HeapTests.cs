@@ -14,12 +14,12 @@ namespace UnitTests
         /// of elements
         /// </summary>
         /// <param name="elementsToInsert">The elements to insert into the heap</param>
-        /// <param name="expectedInternalArray">The expected internal array after insertion of all elements</param>
+        /// <param name="expectedElements">The expected internal array after insertion of all elements</param>
         [TestCase(new[] { 10 }, new[] { 10 })]
         [TestCase(new[] { 1, 2, 3, 4, 5 }, new[] { 5, 4, 2, 1, 3 })]
         [TestCase(new[] { 1000, 2, 567, 36, 999, 1001 }, new[] { 1001, 999, 1000, 2, 36, 567 })]
         [TestCase(new[] { 5, 20, 3, 40, 6, 51, 0, -10, 46 }, new[] { 51, 46, 40, 20, 6, 3, 0, -10, 5 })]
-        public void TestInsertInternal(int[] elementsToInsert, int[] expectedInternalArray)
+        public void TestInsertInternal(int[] elementsToInsert, int[] expectedElements)
         {
             var heap = new HeapMock<int>();
 
@@ -28,7 +28,35 @@ namespace UnitTests
                 heap.Insert(element);
             }
 
-            Assert.That(heap.GetInternalArray(), Is.EqualTo(expectedInternalArray));
+            Assert.That(heap.GetInternalArray(), Is.EqualTo(expectedElements));
+        }
+
+        /// <summary>
+        /// Checks that the state of the internal array in <see cref="Heap{T}"/> is correct after removal
+        /// of elements
+        /// </summary>
+        /// <param name="elementsToInsert">The elements to insert into the heap</param>
+        /// <param name="elementsToRemove">The elements that will be removed from the heap</param>
+        /// <param name="expectedElements">The expected internal array after insertion of all elements</param>
+        [TestCase(new[] { 10 }, new[] { 10 }, new int[0])]
+        [TestCase(new[] { 1, 2, 3, 4, 5 }, new[] { 4, 2 }, new[] { 5, 3, 1 })]
+        [TestCase(new[] { 1000, 2, 567, 36, 999, 1001 }, new[] { 999, 567, 2 }, new[] { 1001, 36, 1000 })]
+        [TestCase(new[] { 5, 20, 3, 40, 6, 51, 0, -10, 46 }, new[] { 46, 40 }, new[] { 51, 20, 3, 5, 6, -10, 0 })]
+        public void TestRemoveInternal(int[] elementsToInsert, int[] elementsToRemove, int[] expectedElements)
+        {
+            var heap = new HeapMock<int>();
+
+            foreach (var element in elementsToInsert)
+            {
+                heap.Insert(element);
+            }
+
+            foreach (var element in elementsToRemove)
+            {
+                heap.Remove(element);
+            }
+
+            Assert.That(heap.GetInternalArray(), Is.EqualTo(expectedElements));
         }
 
         /// <summary>

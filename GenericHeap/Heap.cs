@@ -92,6 +92,27 @@ namespace GenericHeap
             return this.elements[0];
         }
 
+        /// <summary>
+        /// Removes the first instance of <paramref name="elementToRemove"/> found in the heap
+        /// </summary>
+        /// <param name="elementToRemove">The element to remove from the heap</param>
+        public void Remove(T elementToRemove)
+        {
+            for (var index = 0; index < this.elements.Count; index++)
+            {
+                if (this.comparer.Compare(this.elements[index], elementToRemove) == 0)
+                {
+                    var lastIndex = this.elements.Count - 1;
+
+                    this.SwapElements(index, lastIndex);
+                    this.elements.RemoveAt(lastIndex);
+                    this.BubbleDown(index);
+
+                    break;
+                }
+            }
+        }
+
         private void BubbleDown(int parentIndex)
         {
             var leftChildIndex = this.GetIndexOfLeftChild(parentIndex);
