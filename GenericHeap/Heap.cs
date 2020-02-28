@@ -103,7 +103,6 @@ namespace GenericHeap
             return this.elements[0];
         }
 
-
         /// <summary>
         /// Checks if an element exists in the heap
         /// </summary>
