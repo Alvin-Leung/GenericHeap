@@ -17,7 +17,7 @@ namespace GenericHeap
         protected readonly List<T> elements;
 
         /// <summary>
-        /// A lookup for mapping each heap element to one more indices in the internal array
+        /// A lookup for mapping each heap element value/instance to one or more indices in the internal array
         /// </summary>
         protected readonly Dictionary<T, HashSet<int>> elementIndexLookup;
 
