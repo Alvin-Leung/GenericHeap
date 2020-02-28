@@ -103,6 +103,20 @@ namespace GenericHeap
             return this.elements[0];
         }
 
+
+        /// <summary>
+        /// Checks if an element exists in the heap
+        /// </summary>
+        /// <param name="element">The element to search for</param>
+        /// <returns>True if element exists in the heap, otherwise false</returns>
+        /// <remarks>
+        /// This method is an O(1) operation due to the usage of an internal element lookup
+        /// </remarks>
+        public bool Contains(T element)
+        {
+            return this.elementIndexLookup.ContainsKey(element);
+        }
+
         /// <summary>
         /// Removes the first instance of <paramref name="elementToRemove"/> found in the heap
         /// </summary>
@@ -111,6 +125,7 @@ namespace GenericHeap
         /// This method is an O(log(n)) operation due to the usage of an internal lookup for
         /// identifying element indices
         /// </remarks>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="elementToRemove"/> does not exist in the heap</exception>
         public void Remove(T elementToRemove)
         {
             if (!this.elementIndexLookup.ContainsKey(elementToRemove))
