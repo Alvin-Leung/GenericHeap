@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GenericHeap
 {
@@ -14,6 +15,12 @@ namespace GenericHeap
         /// The heap's internal elements
         /// </summary>
         protected readonly List<T> elements;
+
+        /// <summary>
+        /// A lookup for mapping each heap element to one more indices in the internal array
+        /// </summary>
+        protected readonly Dictionary<T, HashSet<int>> elementIndexLookup;
+
         private readonly IComparer<T> comparer;
 
         /// <summary>
@@ -41,6 +48,7 @@ namespace GenericHeap
         {
             this.comparer = comparer;
             this.elements = new List<T>();
+            this.elementIndexLookup = new Dictionary<T, HashSet<int>>();
         }
 
         /// <summary>
@@ -74,6 +82,9 @@ namespace GenericHeap
         public void Insert(T newElement)
         {
             this.elements.Add(newElement);
+            var lastIndex = this.elements.Count - 1;
+            this.AddIndexToLookup(newElement, lastIndex);
+
             this.BubbleUp(this.elements.Count - 1);
         }
 
@@ -96,21 +107,19 @@ namespace GenericHeap
         /// Removes the first instance of <paramref name="elementToRemove"/> found in the heap
         /// </summary>
         /// <param name="elementToRemove">The element to remove from the heap</param>
+        /// <remarks>
+        /// This method is an O(log(n)) operation due to the usage of an internal lookup for
+        /// identifying element indices
+        /// </remarks>
         public void Remove(T elementToRemove)
         {
-            for (var index = 0; index < this.elements.Count; index++)
-            {
-                if (this.comparer.Compare(this.elements[index], elementToRemove) == 0)
-                {
-                    var lastIndex = this.elements.Count - 1;
+            var index = this.elementIndexLookup[elementToRemove].First();
+            var lastIndex = this.elements.Count - 1;
 
-                    this.SwapElements(index, lastIndex);
-                    this.elements.RemoveAt(lastIndex);
-                    this.BubbleDown(index);
-
-                    break;
-                }
-            }
+            this.SwapElements(index, lastIndex);
+            this.RemoveIndexFromLookup(this.elements[lastIndex], lastIndex);
+            this.elements.RemoveAt(lastIndex);
+            this.BubbleDown(index);
         }
 
         private void BubbleDown(int parentIndex)
@@ -201,9 +210,38 @@ namespace GenericHeap
 
         private void SwapElements(int firstIndex, int secondIndex)
         {
-            var temp = this.elements[firstIndex];
-            this.elements[firstIndex] = this.elements[secondIndex];
-            this.elements[secondIndex] = temp;
+            if (firstIndex == secondIndex)
+            {
+                return;
+            }
+
+            var firstElement = this.elements[firstIndex];
+            var secondElement = this.elements[secondIndex];
+            this.elements[firstIndex] = secondElement;
+            this.elements[secondIndex] = firstElement;
+
+            this.RemoveIndexFromLookup(firstElement, firstIndex);
+            this.RemoveIndexFromLookup(secondElement, secondIndex);
+
+            this.AddIndexToLookup(this.elements[firstIndex], firstIndex);
+            this.AddIndexToLookup(this.elements[secondIndex], secondIndex);
+        }
+
+        private void RemoveIndexFromLookup(T element, int index)
+        {
+            this.elementIndexLookup[element].Remove(index);
+        }
+
+        private void AddIndexToLookup(T element, int index)
+        {
+            if (this.elementIndexLookup.ContainsKey(element))
+            {
+                this.elementIndexLookup[element].Add(index);
+            }
+            else
+            {
+                this.elementIndexLookup.Add(element, new HashSet<int> { index });
+            }
         }
 
         private int GetParentIndex(int childIndex)
