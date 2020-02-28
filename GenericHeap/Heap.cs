@@ -113,6 +113,11 @@ namespace GenericHeap
         /// </remarks>
         public void Remove(T elementToRemove)
         {
+            if (!this.elementIndexLookup.ContainsKey(elementToRemove))
+            {
+                throw new ArgumentException("Element does not exist in the heap");
+            }
+
             var index = this.elementIndexLookup[elementToRemove].First();
             var lastIndex = this.elements.Count - 1;
 
