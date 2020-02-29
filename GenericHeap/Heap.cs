@@ -259,14 +259,12 @@ namespace GenericHeap
 
         private void AddIndexToLookup(T element, int index)
         {
-            if (this.elementIndexLookup.ContainsKey(element))
+            if (!elementIndexLookup.TryGetValue(element, out var indices))
             {
-                this.elementIndexLookup[element].Add(index);
+                elementIndexLookup[element] = indices = new HashSet<int>();
             }
-            else
-            {
-                this.elementIndexLookup.Add(element, new HashSet<int> { index });
-            }
+
+            indices.Add(index);
         }
 
         private int GetParentIndex(int childIndex)
