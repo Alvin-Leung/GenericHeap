@@ -62,6 +62,64 @@ namespace UnitTests
         }
 
         /// <summary>
+        /// Ensure that <see cref="Heap{T}.Remove(T)"/> does not throw exception when called for same element twice
+        /// </summary>
+        public void TestRemoveSameElementTwice()
+        {
+            var heap = new Heap<int>();
+            var element = 111;
+            heap.Insert(element);
+            heap.Remove(element);
+            
+            Assert.DoesNotThrow(() => heap.Remove(element));
+        }
+
+        /// <summary>
+        /// Ensure that <see cref="Heap{T}.Contains(T)"/> returns false for elements that have been removed
+        /// </summary>
+        [Test]
+        public void TestContainsAfterRemove()
+        {
+            var heap = new Heap<int>();
+            var elements = new[] { 10, 20, 30 };
+
+            foreach (var element in elements)
+            {
+                heap.Insert(element);
+            }
+
+            foreach (var element in elements)
+            {
+                heap.Remove(element);
+            }
+
+            foreach (var element in elements)
+            {
+                Assert.That(heap.Contains(element), Is.False);
+            }
+        }
+
+        /// <summary>
+        /// Ensure that <see cref="Heap{T}.Contains(T)"/> returns true for elements that exist in the heap
+        /// </summary>
+        [Test]
+        public void TestContainsForExistingElements()
+        {
+            var heap = new Heap<int>();
+            var elements = new[] { 10, 20, 30 };
+
+            foreach (var element in elements)
+            {
+                heap.Insert(element);
+            }
+
+            foreach (var element in elements)
+            {
+                Assert.That(heap.Contains(element), Is.True);
+            }
+        }
+
+        /// <summary>
         /// Checks that after inserting elements, polled values are returned in order of descending priority
         /// </summary>
         /// <param name="elementsToInsert">The elements to insert into the heap</param>

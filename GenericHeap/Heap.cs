@@ -248,7 +248,13 @@ namespace GenericHeap
 
         private void RemoveIndexFromLookup(T element, int index)
         {
-            this.elementIndexLookup[element].Remove(index);
+            var indexLookup = this.elementIndexLookup[element];
+            indexLookup.Remove(index);
+            
+            if (indexLookup.Count == 0)
+            {
+                this.elementIndexLookup.Remove(element);
+            }
         }
 
         private void AddIndexToLookup(T element, int index)
